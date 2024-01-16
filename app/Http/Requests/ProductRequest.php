@@ -21,7 +21,7 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'description' => 'required|string',
@@ -30,5 +30,16 @@ class ProductRequest extends FormRequest
             'shipping_cost' => 'required|numeric',
             'product_status' => 'required|in:active,inactive',
         ];
+
+        // Apply required rule for feature_image only during creation
+        if ($this->isMethod('post')) {
+            $rules['feature_image'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        }
+        if ($this->isMethod('post')) {
+            $rules['gallery_images.*'] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        }
+
+        return $rules;
+
     }
 }

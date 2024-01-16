@@ -5,19 +5,21 @@
         </h2>
     </x-slot>
 
+    @if(session('message'))
+        <h6 class="alert alert-success">
+            {{ session('message') }}
+        </h6>
+    @endif
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <div class="p-2 bg-white dark:bg-gray-900">
-                        <button  data-modal-target="create" data-modal-toggle="create" type="button" class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
-                            Add product
-                        </button>
-
                         <x-primary-button
                             x-data=""
                             x-on:click.prevent="$dispatch('open-modal', 'create')"
-                        >{{ __('Delete Account') }}</x-primary-button>
+                        >{{ __('Add product') }}</x-primary-button>
                     </div>
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -60,19 +62,29 @@
                             <td class="px-6 py-4">
                                 {{ $product->product_status }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4" x-data="deleteProduct()">
                                 <a href="{{ route('products.edit', $product->id) }}" class="text-blue-500">Edit</a>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="post" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 ml-2">Delete</button>
-                                </form>
+                                <button @click="confirmDelete = true" class="text-red-500 ml-2">Delete</button>
+                                <div x-show="confirmDelete" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+                                    <div class="bg-white p-5 rounded shadow-lg">
+                                        <p>Are you sure you want to delete this product?</p>
+                                        <div class="mt-4 flex justify-end">
+                                            <button @click="confirmDelete = false" class="bg-gray-500 text-white px-4 py-2 mr-2">Cancel</button>
+                                            <form action="{{ route('products.destroy', $product->id) }}" method="post" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="bg-red-500 text-white px-4 py-2">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                                 <a href="{{ route('products.pdf', $product->id) }}" class="text-green-500 ml-2">Generate PDF</a>
                             </td>
                         </tr>
                         @endforeach
                         </tbody>
                     </table>
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>
@@ -82,3 +94,12 @@
 
 
 </x-app-layout>
+
+<script>
+    function deleteProduct() {
+        return {
+            confirmDelete: false,
+        };
+    }
+
+</script>

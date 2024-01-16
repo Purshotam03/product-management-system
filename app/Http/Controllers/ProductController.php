@@ -13,7 +13,7 @@ class ProductController extends Controller
 
     public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
-        $products = Product::all();
+        $products = Product::query()->paginate(5);
         return view('products.index', compact('products'));
     }
 
@@ -26,7 +26,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect('/products')->with('success', 'Product added successfully!');
+        return redirect()->back()->with('success', 'Product added successfully!');
     }
 
     private function handleImageUploads(Product $product, ProductRequest $request)
@@ -46,18 +46,18 @@ class ProductController extends Controller
         }
     }
 
-    public function edit(Product $product): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    public function edit($productId): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
-        return view('products.edit', compact('product'));
+        $product = Product::query()->findOrFail($productId);
+        return view('products.partials.edit-form', compact('product'));
     }
 
     public function update(ProductRequest $request, $productId): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
         $product = Product::query()->findOrFail($productId);
         $product->update($request->all());
-
         $this->handleImageUploads($product, $request);
-
+        $product->save();
         return redirect('/products')->with('success', 'Product updated successfully!');
     }
 
@@ -84,8 +84,9 @@ class ProductController extends Controller
         }
     }
 
-    public function generatePdf(Product $product): \Illuminate\Http\Response
+    public function generatePdf($productId): \Illuminate\Http\Response
     {
+        $product = Product::query()->findOrFail($productId);
         $pdf = PDF::loadView('products.pdf', ['product' => $product]);
         return $pdf->download('product.pdf');
     }

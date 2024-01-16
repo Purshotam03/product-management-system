@@ -1,17 +1,23 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+</head>
+<body>
+<h1>Product Details</h1>
+
+<p><strong>Name:</strong> {{ $product->name }}</p>
+<p><strong>Price:</strong> ${{ $product->price }}</p>
+<p><strong>Description:</strong> {{ $product->description }}</p>
+<p><strong>Product Status:</strong> {{ $product->product_status }}</p>
+<p><strong>Shipping Cost:</strong> ${{ $product->shipping_cost }}</p>
+
+{{--@if($product->feature_image)
+    <img src="{{ storage_path('app/'.$product->feature_image_path) }}" style="width: 200px; height: 200px">
+@endif--}}
+
+</body>
+</html>

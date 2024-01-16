@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -43,6 +44,9 @@ Route::middleware('auth')->group(function () {
 
     // PDF Generation
     Route::get('/products/{productId}/pdf', [ProductController::class, 'generatePdf'])->name('products.pdf');
+
+    Route::get('/product-images/{filename}', [ProductImageController::class, 'show'])->name('product.image.show');
+
 });
 
 require __DIR__.'/auth.php';
